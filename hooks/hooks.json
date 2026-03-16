@@ -1,0 +1,17 @@
+{
+  "description": "codex-review plugin hooks - review reminder on task completion",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash hooks/stop-review-reminder.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

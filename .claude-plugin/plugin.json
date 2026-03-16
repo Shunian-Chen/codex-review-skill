@@ -1,0 +1,7 @@
+{
+  "name": "codex-review-skill",
+  "description": "External validation and review via OpenAI Codex CLI - auto-consult, plan review, and code review using a second AI opinion",
+  "author": {
+    "name": "Shunian Chen"
+  }
+}
