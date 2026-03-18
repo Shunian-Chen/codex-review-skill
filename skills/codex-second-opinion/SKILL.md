@@ -49,18 +49,38 @@ Automatically invoke Codex consultation when ANY of these conditions apply:
 
 ## How to Consult Codex
 
+**Important**: Before calling any script, the plugin root is available via `${CLAUDE_PLUGIN_ROOT}`.
+
 ### External Consultation (Second Opinion)
 
-Formulate a focused question using the Context/Problem/Tried/Question structure:
+Formulate a **precise, specific** question. Every consultation MUST include concrete details — never send vague or generic questions. Follow this checklist:
 
-```bash
-bash scripts/codex-consult.sh "Context: [project type and tech stack]. Problem: [specific issue]. What we tried: [approaches attempted and results]. Question: [what specific insight is needed]"
+#### Required in every question:
+1. **Exact file paths** — which files are involved (e.g., `src/auth/jwt_handler.py`, `pkg/api/router.go:142`)
+2. **Actual code snippets** — the relevant function, class, or block (not paraphrased, copy the real code)
+3. **Exact error messages** — full error text, stack traces, or unexpected output (not "it errors" or "it fails")
+4. **What was tried and the specific result** — "Changed X in file Y, got error Z" (not "tried a few things")
+5. **One focused question** — ask about one specific thing, not "what do you think about this code"
+
+#### Question structure:
+
+```
+File(s): [exact file paths involved]
+Code: [paste the relevant code snippet, 5-30 lines]
+Error/Issue: [exact error message or unexpected behavior]
+Tried: [specific change → specific result, for each attempt]
+Question: [one precise question about a specific aspect]
 ```
 
-Example:
+#### Good example:
 ```bash
-bash scripts/codex-consult.sh "Context: Python Flask app with SQLAlchemy 2.0. Problem: Intermittent DetachedInstanceError when accessing lazy-loaded relationships after session close. Tried: eager loading with joinedload(), expire_on_commit=False. Question: What is the recommended pattern for handling lazy loads across request boundaries in SQLAlchemy 2.0?"
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/codex-consult.sh" "File: src/db/session.py:45-62 and src/api/users.py:128. Code in session.py: 'def get_session(): engine = create_engine(DB_URL); Session = sessionmaker(bind=engine); return Session()'. Code in users.py: 'user = session.query(User).first(); session.close(); return user.profile'. Error: 'sqlalchemy.orm.exc.DetachedInstanceError: Parent instance <User> is not bound to a Session; lazy load operation of attribute profile cannot proceed'. Tried: 1) Added joinedload(User.profile) in users.py:128 → same error. 2) Set expire_on_commit=False in session.py:48 → error disappears but stale data returned. Question: In SQLAlchemy 2.0, should I use scoped_session with a request-level lifecycle instead of manually closing, or is there a better pattern for lazy-loaded relationships that cross the session boundary?"
 ```
+
+#### Bad examples (DO NOT do this):
+- "How should I handle database sessions?" — too vague, no file or code context
+- "I'm getting an error with SQLAlchemy" — no error message, no code, no file path
+- "What's the best way to do authentication?" — no project context, not specific to any code
 
 ### Plan Review
 
@@ -70,7 +90,7 @@ After completing a plan, write it to a temp file and send for review:
 cat > /tmp/plan_for_codex.md << 'PLAN_EOF'
 [full plan text here]
 PLAN_EOF
-bash scripts/codex-plan-review.sh /tmp/plan_for_codex.md
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/codex-plan-review.sh" /tmp/plan_for_codex.md
 ```
 
 ### Code Review
@@ -78,12 +98,12 @@ bash scripts/codex-plan-review.sh /tmp/plan_for_codex.md
 After completing code changes, run the review on uncommitted changes:
 
 ```bash
-bash scripts/codex-code-review.sh
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/codex-code-review.sh"
 ```
 
 Or review against a specific branch:
 ```bash
-bash scripts/codex-code-review.sh --base main
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/codex-code-review.sh" --base main
 ```
 
 ## Interpreting and Presenting Results
@@ -106,6 +126,7 @@ After receiving Codex's response, follow this protocol:
 - Always tell the user when Codex is being consulted — transparency is essential
 - Do not call Codex for trivial questions (typos, formatting, simple syntax)
 - If Codex is unavailable or times out, proceed with own analysis and note the failed consultation
-- Keep questions focused and specific — vague questions get vague answers
+- **Every question MUST include specific file paths, actual code snippets, and exact error messages** — never send generic or abstract questions
+- Before sending a question, read the relevant source files to gather exact code and context — do not rely on memory or paraphrasing
 - Include relevant code snippets in consultation prompts when applicable
 - For code review, ensure changes are saved to disk before calling the review script

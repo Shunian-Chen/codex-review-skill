@@ -13,14 +13,14 @@ Send an implementation plan to OpenAI Codex for critical review. To do this, fol
 
 2. Send the plan to Codex for review:
 ```bash
-bash scripts/codex-plan-review.sh "/path/to/plan/file"
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/codex-plan-review.sh" "/path/to/plan/file"
 ```
    Or if the plan is from conversation context, write it to a temp file first:
 ```bash
 cat > /tmp/plan_to_review.md << 'EOF'
 <plan content here>
 EOF
-bash scripts/codex-plan-review.sh /tmp/plan_to_review.md
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/codex-plan-review.sh" /tmp/plan_to_review.md
 ```
 
 3. Present the Codex review under a clear header: **Codex Plan Review:**

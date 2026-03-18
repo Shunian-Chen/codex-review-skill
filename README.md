@@ -99,9 +99,11 @@ The Stop hook also reminds Claude about unreviewed code changes when finishing a
 
 ### Script Usage (Direct)
 
-The scripts can also be called directly from the terminal:
+The scripts can also be called directly from the terminal (run from the plugin directory):
 
 ```bash
+cd /path/to/codex-review-skill
+
 # Ask a question
 bash scripts/codex-consult.sh "Your question here"
 

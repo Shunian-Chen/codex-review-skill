@@ -99,9 +99,11 @@ Stop Hook 还会在任务结束时提醒 Claude 有未审查的代码变更。
 
 ### 直接调用脚本
 
-三个核心脚本也可以直接在终端中调用：
+三个核心脚本也可以直接在终端中调用（需从插件目录内运行）：
 
 ```bash
+cd /path/to/codex-review-skill
+
 # 提问
 bash scripts/codex-consult.sh "你的问题"
 

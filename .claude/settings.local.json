@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash \"${CLAUDE_PLUGIN_ROOT}/scripts/*\"*)",
+      "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/*)",
+      "Bash(bash ${CLAUDE_PLUGIN_ROOT}/hooks/*)",
+      "Bash(codex exec:*)",
+      "Bash(codex review:*)",
+      "Bash(codex:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(chmod:*)",
+      "Bash(bash -n /data/codex-review-skill/scripts/*.sh /data/codex-review-skill/hooks/*.sh /data/codex-review-skill/install.sh && echo \"All scripts pass syntax check\")"
+    ]
+  }
+}

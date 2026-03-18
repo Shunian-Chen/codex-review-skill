@@ -19,7 +19,7 @@ git status --porcelain
 
 3. Run the Codex code review:
 ```bash
-bash scripts/codex-code-review.sh $ARGUMENTS
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/codex-code-review.sh" $ARGUMENTS
 ```
 
 4. Present the Codex review results under a clear header: **Codex Code Review:**
